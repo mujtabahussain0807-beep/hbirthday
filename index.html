@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎀 Birthday Surprise Template</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+input[type="file"]{display:none !important;visibility:hidden !important;position:absolute !important;width:0 !important;height:0 !important;overflow:hidden !important;}
+
+body{
+  font-family:'Comic Neue', 'Nunito', sans-serif;
+  background:#fff;
+  overflow:hidden;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+}
+
+/* ── ALL SCREENS ── */
+.screen{
+  display:none;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  position:fixed;
+  top:0;left:0;
+  animation:fadeIn 0.4s ease;
+  overflow:hidden;
+}
+.screen.active{display:flex;}
+
+@keyframes fadeIn{from{opacity:0;transform:scale(0.97);}to{opacity:1;transform:scale(1);}}
+
+/* ── SCREEN 1 — PASSCODE ── */
+#s1{
+  flex-direction:row;
+  background:#fce4ec;
+}
+.s1-left{
+  flex:1;
+  background:#f8bbd0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.scatter{position:absolute;inset:0;pointer-events:none;}
+.scatter span{position:absolute;color:#c2185b;font-size:13px;opacity:0.3;}
+
+.oval-wrap{
+  position:relative;z-index:2;
+  width:220px;height:260px;
+  display:flex;align-items:center;justify-content:center;
+}
+.oval-frame{
+  width:200px;height:240px;
+  border-radius:50%;background:white;
+  box-shadow:0 0 0 5px #f48fb1,0 0 0 9px white,0 0 0 13px #f48fb1;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+}
+.oval-frame img{width:100%;height:100%;object-fit:cover;}
+
+.heart-ring{position:absolute;inset:-20px;border-radius:50%;z-index:1;}
+.heart-ring span{position:absolute;top:50%;left:50%;font-size:11px;color:#e91e8c;opacity:0.65;}
+
+.s1-right{
+  flex:1;background:#fce4ec;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;padding:30px 20px;
+}
+.pc-label{font-family:'Comic Neue', sans-serif;font-style:normal;font-size:1.9rem;color:#c2185b;font-weight:700;}
+.pc-boxes{display:flex;gap:10px;}
+.pc-box{
+  width:52px;height:52px;
+  border:2.5px solid #e91e8c;border-radius:10px;background:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;color:#e91e8c;transition:background 0.15s;
+}
+.pc-box.on{background:#f8bbd0;}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:195px;}
+.key{
+  height:54px;border:none;border-radius:50%;
+  background:white;color:#c2185b;font-size:1.3rem;font-weight:900;
+  font-family:'Nunito', sans-serif;cursor:pointer;
+  box-shadow:0 3px 10px rgba(233,30,140,0.18);
+  transition:all 0.12s;user-select:none;
+}
+.key:hover{background:#f8bbd0;transform:scale(1.08);}
+.key:active{transform:scale(0.92);}
+.unlock-btn{
+  display:none;background:white;color:#e91e8c;
+  border:2.5px solid #e91e8c;padding:10px 40px;
+  border-radius:30px;font-size:1rem;font-weight:900;
+  font-family:'Nunito', sans-serif;cursor:pointer;transition:all 0.2s;
+}
+.unlock-btn:hover{background:#e91e8c;color:white;}
+
+/* ── SHARED SLIDE SCREENS ── */
+.slide{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:white;gap:18px;padding:24px 20px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.glow{
+  position:absolute;
+  width:min(420px,90vw);height:min(420px,90vw);
+  background:radial-gradient(circle,#fce4ec 0%,transparent 68%);
+  border-radius:50%;top:50%;left:50%;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+}
+.slide > *{position:relative;z-index:1;}
+
+.big-red{
+  font-family:'Comic Neue', sans-serif;
+  font-style:normal;
+  font-size:clamp(1.9rem,6.5vw,3.2rem);
+  color:#c2185b;font-weight:700;line-height:1.25;
+}
+.action-btn{
+  background:#c2185b;color:white;border:none;
+  padding:14px 48px;border-radius:30px;
+  font-size:1rem;font-weight:900;font-family:'Nunito', sans-serif;
+  cursor:pointer;box-shadow:0 4px 16px rgba(194,24,91,0.35);
+  transition:all 0.2s;user-select:none;
+}
+.action-btn:hover{transform:scale(1.05);}
+.action-btn.grey{background:#aaa;box-shadow:none;}
+.action-btn.grey:hover{background:#888;transform:scale(1.03);}
+.yn-row{display:flex;gap:18px;}
+
+/* shrink SVG illustrations to always fit screen */
+.slide svg, #s7 svg, #s8 svg{
+  max-width:min(90vw, 100%);
+  max-height:35vh;
+  width:auto;
+  height:auto;
+}
+
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+/* ── SCREEN 6 — WISH ── */
+#s6{flex-direction:column;background:white;overflow:hidden;}
+.wish-scroll{
+  width:100%;height:100%;flex:1;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:28px 40px 90px;
+}
+.wish-top{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+
+/* Custom gentle italic font application for Screen 6 */
+.wish-title{
+  font-family:'Comic Neue', sans-serif;
+  font-style:italic;
+  font-size:clamp(1.9rem,6.5vw,3.2rem);
+  color:#c2185b;font-weight:700;
+}
+.wish-right{margin-left:auto;font-size:1.3rem;line-height:1.8;}
+.wish-body{
+  font-family:'Comic Neue', sans-serif;
+  font-style:italic;
+  font-size:clamp(1.1rem,2.8vw,1.45rem);
+  color:#333;line-height:1.9;
+}
+.wish-body p{margin-bottom:0.4em;}
+.wish-body .rb{color:#c2185b;font-weight:700;}
+
+.wish-next-btn{
+  position:fixed;bottom:20px;right:24px;z-index:99;
+  background:#c2185b;color:white;border:none;
+  padding:11px 30px;border-radius:30px;
+  font-size:0.9rem;font-weight:900;font-family:'Nunito', sans-serif;
+  cursor:pointer;box-shadow:0 4px 16px rgba(194,24,91,0.35);display:none;
+}
+
+/* ── SCREEN 8 ── */
+#s8{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:white;gap:22px;padding:30px 20px;
+  position:relative;overflow:hidden;
+}
+.star-bg{position:absolute;inset:0;pointer-events:none;}
+.star-bg span{position:absolute;font-size:1.1rem;color:#e91e8c;opacity:0.25;pointer-events:none;}
+
+/* ── FLOATING HEARTS ── */
+.fheart{position:fixed;pointer-events:none;z-index:9999;font-size:1.6rem;animation:fh 2.4s ease forwards;}
+@keyframes fh{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-220px) scale(0.4);}}
+
+/* ════════════════════════════════
+   MOBILE — all sizes up to 768px
+   Uses dvh for correct mobile height
+   ════════════════════════════════ */
+@media(max-width:768px){
+
+  body,
+  .screen{height:100dvh;}
+
+  /* ── Screen 1: stack image on top, keypad below ── */
+  #s1{flex-direction:column;overflow-y:auto;}
+  .s1-left{
+    flex:0 0 auto;
+    width:100%;
+    min-height:38dvh;
+    padding:16px 0 10px;
+  }
+  .oval-wrap{width:130px;height:158px;}
+  .oval-frame{width:120px;height:144px;}
+  .s1-right{
+    flex:1 1 auto;width:100%;
+    padding:10px 16px 20px;gap:10px;
+  }
+  .pc-label{font-size:1.55rem;}
+  .pc-box{width:40px;height:40px;font-size:1.2rem;}
+  .keypad{width:160px;gap:7px;}
+  .key{height:44px;font-size:1rem;}
+  .unlock-btn{padding:9px 32px;font-size:0.9rem;}
+
+  /* ── All slide screens: scroll if content overflows ── */
+  .slide{
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    justify-content:flex-start;
+    padding-top:max(20px, 5dvh);
+    gap:clamp(10px,2.5vh,18px);
+  }
+
+  /* ── Text sizes ── */
+  .big-red{font-size:clamp(1.8rem,6.5vw,2.6rem);}
+  .action-btn{padding:13px 32px;font-size:1rem;}
+  .yn-row{gap:12px;}
+
+  /* ── SVGs: never taller than 30% of screen ── */
+  .slide svg, #s7 svg, #s8 svg{
+    max-width:85vw;
+    max-height:30dvh;
+    width:auto;
+    height:auto;
+    flex-shrink:0;
+  }
+
+  /* ── Screen 6: wish scroll ── */
+  .wish-scroll{padding:16px 18px 90px;}
+  .wish-title{font-size:clamp(1.8rem,6vw,2.6rem);}
+  .wish-body{font-size:clamp(1.2rem,4.8vw,1.6rem);line-height:1.8;}
+
+  /* ── Screen 8 ── */
+  #s8{gap:12px;padding:16px 14px;}
+  #s8 .big-red{font-size:clamp(1.8rem,6.5vw,2.6rem);}
+}
+
+/* Extra small phones (< 380px wide) */
+@media(max-width:380px){
+  .pc-box{width:36px;height:36px;font-size:1rem;}
+  .keypad{width:148px;gap:6px;}
+  .key{height:40px;font-size:0.95rem;}
+  .slide svg,#s7 svg,#s8 svg{max-height:26dvh;}
+  .big-red{font-size:clamp(1.5rem,6vw,2.2rem);}
+}
+</style>
+</head>
+<body>
+
+<div class="screen active" id="s1">
+  <div class="s1-left">
+    <div class="scatter" id="scatter"></div>
+    <div class="oval-wrap">
+      <div class="heart-ring" id="heartRing"></div>
+      <div class="oval-frame">
+        <svg width="200" height="240" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="240" fill="#fff0f5"/>
+          <ellipse cx="100" cy="195" rx="54" ry="45" fill="#f498bf"/>
+          <ellipse cx="100" cy="198" rx="36" ry="26" fill="#f7b5d2" opacity="0.6"/>
+          <circle cx="100" cy="124" r="48" fill="#f498bf"/>
+          <circle cx="64" cy="84" r="15" fill="#f498bf"/>
+          <circle cx="136" cy="84" r="15" fill="#f498bf"/>
+          <circle cx="64" cy="84" r="9" fill="#f7b5d2"/>
+          <circle cx="136" cy="84" r="9" fill="#f7b5d2"/>
+          <circle cx="82" cy="118" r="7" fill="#1a1a1a"/>
+          <circle cx="118" cy="118" r="7" fill="#1a1a1a"/>
+          <circle cx="84" cy="115" r="2.2" fill="white"/>
+          <circle cx="120" cy="115" r="2.2" fill="white"/>
+          <ellipse cx="68" cy="128" rx="11" ry="8" fill="#ff7da7" opacity="0.5"/>
+          <ellipse cx="132" cy="128" rx="11" ry="8" fill="#ff7da7" opacity="0.5"/>
+          <circle cx="100" cy="126" r="4.5" fill="#e91e8c"/>
+          <path d="M90 133 Q100 141 110 133" stroke="#e91e8c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="s1-right">
+    <div class="pc-label">Enter a passcode</div>
+    <div class="pc-boxes">
+      <div class="pc-box" id="b0"></div>
+      <div class="pc-box" id="b1"></div>
+      <div class="pc-box" id="b2"></div>
+      <div class="pc-box" id="b3"></div>
+    </div>
+    <div class="keypad">
+      <button class="key" onclick="kp('1')">1</button>
+      <button class="key" onclick="kp('2')">2</button>
+      <button class="key" onclick="kp('3')">3</button>
+      <button class="key" onclick="kp('4')">4</button>
+      <button class="key" onclick="kp('5')">5</button>
+      <button class="key" onclick="kp('6')">6</button>
+      <button class="key" onclick="kp('7')">7</button>
+      <button class="key" onclick="kp('8')">8</button>
+      <button class="key" onclick="kp('9')">9</button>
+      <button class="key" onclick="kp('*')">✱</button>
+      <button class="key" onclick="kp('0')">0</button>
+      <button class="key" onclick="kp('#')">#</button>
+    </div>
+    <button class="unlock-btn" id="unlockBtn" onclick="checkCode()">UNLOCK</button>
+  </div>
+</div>
+
+<div class="screen slide" id="s2">
+  <div class="glow"></div>
+  <div class="big-red">WRONG PASSCODE!</div>
+
+  <svg width="220" height="160" viewBox="0 0 220 160" style="animation:bounce 1.3s ease-in-out infinite">
+    <ellipse cx="55" cy="138" rx="36" ry="22" fill="#f498bf"/>
+    <circle cx="55" cy="96" r="30" fill="#f498bf"/>
+    <circle cx="38" cy="72" r="11" fill="#f498bf"/>
+    <circle cx="72" cy="72" r="11" fill="#f498bf"/>
+    <circle cx="38" cy="72" r="6" fill="#f7b5d2"/>
+    <circle cx="72" cy="72" r="6" fill="#f7b5d2"/>
+    <circle cx="45" cy="94" r="5.5" fill="#1a1a1a"/>
+    <circle cx="65" cy="94" r="5.5" fill="#1a1a1a"/>
+    <circle cx="46.5" cy="92.5" r="1.8" fill="white"/>
+    <circle cx="66.5" cy="92.5" r="1.8" fill="white"/>
+    <circle cx="55" cy="100" r="3.5" fill="#e91e8c"/>
+    <circle cx="38" cy="104" r="7" fill="#ff7da7" opacity="0.5"/>
+    <circle cx="72" cy="104" r="7" fill="#ff7da7" opacity="0.5"/>
+    <path d="M45 112 Q55 106 65 112" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <ellipse cx="39" cy="110" rx="2.5" ry="4.5" fill="#64b5f6"/>
+
+    <ellipse cx="163" cy="138" rx="38" ry="22" fill="#ffb040"/>
+    <circle cx="163" cy="94" r="32" fill="#ffb040"/>
+    <circle cx="144" cy="68" r="12" fill="#ffb040"/>
+    <circle cx="182" cy="68" r="12" fill="#ffb040"/>
+    <circle cx="144" cy="68" r="6.5" fill="#ffd080"/>
+    <circle cx="182" cy="68" r="6.5" fill="#ffd080"/>
+    <circle cx="151" cy="91" r="6" fill="#1a1a1a"/>
+    <circle cx="173" cy="91" r="6" fill="#1a1a1a"/>
+    <circle cx="152.5" cy="89.5" r="2" fill="white"/>
+    <circle cx="174.5" cy="89.5" r="2" fill="white"/>
+    <circle cx="163" cy="98" r="3.5" fill="#e91e8c"/>
+    <circle cx="144" cy="102" r="8" fill="#ff9050" opacity="0.4"/>
+    <circle cx="181" cy="102" r="8" fill="#ff9050" opacity="0.4"/>
+    <path d="M152 110 Q163 104 174 110" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <ellipse cx="145" cy="111" rx="2.5" ry="4.5" fill="#64b5f6"/>
+  </svg>
+
+  <button class="action-btn" onclick="goTo('s1')">TRY AGAIN</button>
+</div>
+
+<div class="screen slide" id="s3">
+  <div class="glow"></div>
+  <div class="big-red">I made something special for u<br>do u wanna see it? 🫶</div>
+
+  <svg width="240" height="160" viewBox="0 0 240 160" style="animation:bounce 2s ease-in-out infinite">
+    <ellipse cx="78" cy="122" rx="38" ry="26" fill="#f498bf"/>
+    <circle cx="78" cy="82" r="32" fill="#f498bf"/>
+    <circle cx="60" cy="56" r="12" fill="#f498bf"/>
+    <circle cx="96" cy="56" r="12" fill="#f498bf"/>
+    <circle cx="60" cy="56" r="6" fill="#f7b5d2"/>
+    <circle cx="96" cy="56" r="6" fill="#f7b5d2"/>
+    <circle cx="70" cy="80" r="6.5" fill="#1a1a1a"/>
+    <circle cx="90" cy="80" r="6.5" fill="#1a1a1a"/>
+    <circle cx="71.5" cy="78" r="1.8" fill="white"/>
+    <circle cx="91.5" cy="78" r="1.8" fill="white"/>
+    <circle cx="80" cy="86" r="3.5" fill="#e91e8c"/>
+    <path d="M72 92 Q80 98 88 92" stroke="#e91e8c" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="62" cy="88" r="8" fill="#ff7da7" opacity="0.5"/>
+    <circle cx="94" cy="88" r="8" fill="#ff7da7" opacity="0.5"/>
+
+    <text x="114" y="68" font-size="16" fill="#e91e8c">❤</text>
+    <text x="118" y="50" font-size="11" fill="#f48fb1">❤</text>
+
+    <ellipse cx="162" cy="122" rx="38" ry="26" fill="#b39ddb"/>
+    <circle cx="162" cy="82" r="32" fill="#b39ddb"/>
+    <circle cx="144" cy="56" r="12" fill="#b39ddb"/>
+    <circle cx="180" cy="56" r="12" fill="#b39ddb"/>
+    <circle cx="144" cy="56" r="6" fill="#d1c4e9"/>
+    <circle cx="180" cy="56" r="6" fill="#d1c4e9"/>
+    <circle cx="152" cy="80" r="6.5" fill="#1a1a1a"/>
+    <circle cx="172" cy="80" r="6.5" fill="#1a1a1a"/>
+    <circle cx="153.5" cy="78" r="1.8" fill="white"/>
+    <circle cx="173.5" cy="78" r="1.8" fill="white"/>
+    <circle cx="162" cy="86" r="3.5" fill="#7e57c2"/>
+    <path d="M154 92 Q162 98 170 92" stroke="#7e57c2" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="144" cy="88" r="8" fill="#d1c4e9" opacity="0.6"/>
+    <circle cx="180" cy="88" r="8" fill="#d1c4e9" opacity="0.6"/>
+  </svg>
+
+  <div class="yn-row">
+    <button class="action-btn" onclick="goTo('s5')">YES</button>
+    <button class="action-btn grey" onclick="goTo('s4')">NO</button>
+  </div>
+</div>
+
+<div class="screen slide" id="s4">
+  <div class="glow"></div>
+  <div class="big-red">Why did u click no!?</div>
+
+  <svg width="220" height="165" viewBox="0 0 220 165" style="animation:bounce 1.5s ease-in-out infinite">
+    <ellipse cx="58" cy="145" rx="35" ry="24" fill="#f498bf"/>
+    <circle cx="58" cy="102" r="30" fill="#f498bf"/>
+    <circle cx="42" cy="76" r="11" fill="#f498bf"/>
+    <circle cx="74" cy="76" r="11" fill="#f498bf"/>
+    <circle cx="42" cy="76" r="6" fill="#f7b5d2"/>
+    <circle cx="74" cy="76" r="6" fill="#f7b5d2"/>
+    <circle cx="48" cy="100" r="6.5" fill="#1a1a1a"/>
+    <circle cx="68" cy="100" r="6.5" fill="#1a1a1a"/>
+    <circle cx="49.5" cy="98" r="2" fill="white"/>
+    <circle cx="69.5" cy="98" r="2" fill="white"/>
+    <circle cx="58" cy="107" r="3.5" fill="#e91e8c"/>
+    <circle cx="42" cy="110" r="9" fill="#ff7da7" opacity="0.45"/>
+    <circle cx="74" cy="110" r="9" fill="#ff7da7" opacity="0.45"/>
+    <path d="M46 122 Q52 116 58 122 Q64 128 70 122" stroke="#444" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <text x="64" y="58" font-size="20" fill="#c2185b" font-weight="bold">??</text>
+
+    <ellipse cx="162" cy="145" rx="38" ry="25" fill="#ffb040"/>
+    <circle cx="162" cy="100" r="32" fill="#ffb040"/>
+    <circle cx="144" cy="72" r="12" fill="#ffb040"/>
+    <circle cx="180" cy="72" r="12" fill="#ffb040"/>
+    <circle cx="144" cy="72" r="6.5" fill="#ffd080"/>
+    <circle cx="180" cy="72" r="6.5" fill="#ffd080"/>
+    <path d="M146 95 Q155 90 164 95" stroke="#1a1a1a" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M166 95 Q175 90 184 95" stroke="#1a1a1a" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <circle cx="151" cy="99" r="3" fill="#1a1a1a"/>
+    <circle cx="173" cy="99" r="3" fill="#1a1a1a"/>
+    <circle cx="162" cy="106" r="4" fill="#e91e8c"/>
+    <circle cx="143" cy="111" r="10" fill="#ff9050" opacity="0.45"/>
+    <circle cx="181" cy="111" r="10" fill="#ff9050" opacity="0.45"/>
+    <line x1="150" y1="123" x2="174" y2="123" stroke="#444" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+
+  <button class="action-btn" onclick="goTo('s3')">TRY AGAIN</button>
+</div>
+
+<div class="screen slide" id="s5">
+  <div class="glow"></div>
+  <div style="font-size:1.2rem;letter-spacing:4px;position:relative;z-index:1;">⭐🎉⭐</div>
+  <div class="big-red" style="font-size:clamp(1.9rem,6.5vw,3.2rem);" id="hbName">HAPPY BIRTHDAY</div>
+
+  <svg width="340" height="178" viewBox="0 0 340 178" style="animation:bounce 2.2s ease-in-out infinite;position:relative;z-index:1;">
+    <circle cx="30" cy="40" r="5" fill="#f48fb1"/><circle cx="310" cy="35" r="4" fill="#4db6bc"/>
+    <circle cx="70" cy="20" r="4" fill="#ffd54f"/><circle cx="270" cy="22" r="4" fill="#ce93d8"/>
+    <text x="12" y="55" font-size="15">⭐</text><text x="306" y="58" font-size="15">⭐</text>
+
+    <ellipse cx="48" cy="160" rx="26" ry="16" fill="#b39ddb"/>
+    <circle cx="48" cy="132" r="22" fill="#b39ddb"/>
+    <circle cx="36" cy="114" r="8" fill="#b39ddb"/>
+    <circle cx="60" cy="114" r="8" fill="#b39ddb"/>
+    <polygon points="48,95 34,118 62,118" fill="#ba68c8"/>
+    <circle cx="48" cy="95" r="4" fill="#ffd54f"/>
+    <path d="M38 130 Q44 124 50 130" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M50 128 Q56 122 62 128" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <circle cx="37" cy="137" r="5" fill="#d1c4e9" opacity="0.6"/>
+
+    <ellipse cx="168" cy="165" rx="50" ry="28" fill="#c8a578"/>
+    <circle cx="168" cy="118" r="46" fill="#c8a578"/>
+    <circle cx="138" cy="84" r="16" fill="#c8a578"/>
+    <circle cx="198" cy="84" r="16" fill="#c8a578"/>
+    <polygon points="168,50 144,84 192,84" fill="#f06292"/>
+    <circle cx="168" cy="50" r="7" fill="#ffd54f"/>
+    <circle cx="153" cy="116" r="11" fill="white"/>
+    <circle cx="183" cy="116" r="11" fill="white"/>
+    <circle cx="154" cy="117" r="7" fill="#222"/>
+    <circle cx="184" cy="117" r="7" fill="#222"/>
+    <path d="M154 132 Q168 143 182 132" stroke="#c2185b" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <circle cx="141" cy="128" r="10" fill="#f48fb1" opacity="0.42"/>
+    <circle cx="195" cy="128" r="10" fill="#f48fb1" opacity="0.42"/>
+    <circle cx="168" cy="128" r="4.5" fill="#c2185b"/>
+
+    <rect x="214" y="132" width="54" height="38" rx="7" fill="#f8bbd0"/>
+    <rect x="214" y="122" width="54" height="14" rx="6" fill="#f48fb1"/>
+    <rect x="239" y="102" width="6" height="14" rx="3" fill="#fff176"/>
+    <ellipse cx="242" cy="101" rx="5" ry="7" fill="#ff7043" opacity="0.88"/>
+
+    <ellipse cx="302" cy="160" rx="26" ry="16" fill="#f498bf"/>
+    <circle cx="302" cy="133" r="22" fill="#f498bf"/>
+    <circle cx="290" cy="115" r="8" fill="#f498bf"/>
+    <circle cx="314" cy="115" r="8" fill="#f498bf"/>
+    <path d="M292 131 Q298 125 304 131" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M304 129 Q310 123 316 129" stroke="#444" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <circle cx="291" cy="139" r="5" fill="#ff7da7" opacity="0.5"/>
+  </svg>
+
+  <div style="font-family:'Comic Neue', sans-serif;font-style:normal;font-size:1.4rem;color:#e91e8c;font-weight:700;position:relative;z-index:1;">i am ur gift 🎁</div>
+  <button class="action-btn" onclick="goTo('s6')" style="position:relative;z-index:1;">Next 💌</button>
+</div>
+
+<div class="screen" id="s6">
+  <div class="wish-scroll" id="wishScroll">
+    <div class="wish-top">
+      <div style="font-size:1.4rem;line-height:1.8;">📷<br>🍭</div>
+      <div class="wish-title">MY WISH FOR U</div>
+      <div class="wish-right">💗<br>💛<br>🍒</div>
+    </div>
+    <div class="wish-body" id="wishBody"></div>
+  </div>
+  <button class="wish-next-btn" id="wishNextBtn" onclick="goTo('s7')">Next 💝</button>
+</div>
+
+<div class="screen slide" id="s7">
+  <div class="glow"></div>
+  <div class="big-red">Virtual hug for ya! 🫂</div>
+
+  <svg width="220" height="210" viewBox="0 0 220 210" style="animation:bounce 2s ease-in-out infinite">
+    <text x="100" y="22" font-size="14" fill="#e91e8c">♥</text>
+    <text x="113" y="14" font-size="10" fill="#f48fb1">♥</text>
+
+    <circle cx="88" cy="80" r="14" fill="#b39ddb"/>
+    <ellipse cx="85" cy="140" rx="36" ry="26" fill="#b39ddb"/>
+    <circle cx="85" cy="98" r="28" fill="#b39ddb"/>
+    
+    <circle cx="152" cy="80" r="14" fill="#f498bf"/>
+    <ellipse cx="135" cy="140" rx="36" ry="26" fill="#f498bf"/>
+    <circle cx="135" cy="98" r="28" fill="#f498bf"/>
+    <circle cx="115" cy="80" r="14" fill="#f498bf"/>
+
+    <circle cx="75" cy="96" r="4" fill="#1a1a1a"/>
+    <circle cx="95" cy="96" r="4" fill="#1a1a1a"/>
+    <path d="M80 102 Q85 106 90 102" stroke="#444" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="68" cy="100" r="6" fill="#d1c4e9" opacity="0.6"/>
+
+    <circle cx="62" cy="80" r="14" fill="#b39ddb"/>
+
+    <circle cx="125" cy="96" r="4" fill="#1a1a1a"/>
+    <circle cx="145" cy="96" r="4" fill="#1a1a1a"/>
+    <path d="M130 102 Q135 106 140 102" stroke="#e91e8c" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="149" cy="100" r="6" fill="#ff7da7" opacity="0.5"/>
+
+    <path d="M60 120 Q110 110 145 125" stroke="#b39ddb" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M160 120 Q110 110 75 125" stroke="#f498bf" stroke-width="16" stroke-linecap="round" fill="none"/>
+  </svg>
+
+  <div class="big-red" style="font-size:clamp(1.9rem,6.5vw,3.2rem);letter-spacing:0.03em;">I MISS YOU 💕</div>
+  <button class="action-btn" onclick="goTo('s8')">Next 🌸</button>
+</div>
+
+<div class="screen" id="s8">
+  <div class="star-bg" id="starBg"></div>
+
+  <div style="position:absolute;font-size:2.5rem;color:#c2185b;opacity:0.5;left:6%;top:50%;transform:translateY(-50%);z-index:1;">〰</div>
+  <div style="position:absolute;font-size:2.5rem;color:#c2185b;opacity:0.5;right:6%;top:50%;transform:translateY(-50%);z-index:1;">〰</div>
+
+  <div class="big-red" style="font-size:clamp(1.9rem,6.5vw,3.2rem);position:relative;z-index:1;">Will you be mine? 💕</div>
+
+  <svg width="280" height="200" viewBox="0 0 280 200" style="animation:bounce 2.2s ease-in-out infinite;position:relative;z-index:1;max-width:85vw;max-height:30dvh;height:auto;width:auto;">
+    <ellipse cx="140" cy="130" rx="90" ry="70" fill="#fce4ec" opacity="0.6"/>
+
+    <text x="30" y="60" font-size="13">✨</text>
+    <text x="230" y="58" font-size="13">✨</text>
+    <text x="127" y="108" font-size="18" fill="#e91e8c">❤</text>
+    <text x="132" y="90" font-size="12" fill="#f48fb1">❤</text>
+
+    <ellipse cx="88" cy="152" rx="38" ry="26" fill="#f498bf"/>
+    <ellipse cx="88" cy="158" rx="24" ry="14" fill="#f7b5d2" opacity="0.5"/>
+    <circle cx="88" cy="100" r="30" fill="#f498bf"/>
+    <circle cx="72" cy="74" r="11" fill="#f498bf"/>
+    <circle cx="104" cy="72" r="11" fill="#f498bf"/>
+    <circle cx="72" cy="74" r="6" fill="#f7b5d2"/>
+    <circle cx="104" cy="72" r="6" fill="#f7b5d2"/>
+    <circle cx="78" cy="98" r="6" fill="#1a1a1a"/>
+    <circle cx="98" cy="98" r="6" fill="#1a1a1a"/>
+    <circle cx="79.5" cy="95.5" r="1.8" fill="white"/>
+    <circle cx="99.5" cy="95.5" r="1.8" fill="white"/>
+    <circle cx="88" cy="104" r="3.5" fill="#e91e8c"/>
+    <path d="M80 110 Q88 116 96 110" stroke="#e91e8c" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="72" cy="106" r="8" fill="#ff7da7" opacity="0.5"/>
+    <circle cx="104" cy="106" r="8" fill="#ff7da7" opacity="0.5"/>
+
+    <ellipse cx="192" cy="152" rx="38" ry="26" fill="#b39ddb"/>
+    <ellipse cx="192" cy="158" rx="24" ry="14" fill="#d1c4e9" opacity="0.5"/>
+    <circle cx="192" cy="100" r="30" fill="#b39ddb"/>
+    <circle cx="176" cy="74" r="11" fill="#b39ddb"/>
+    <circle cx="208" cy="72" r="11" fill="#b39ddb"/>
+    <circle cx="176" cy="74" r="6" fill="#d1c4e9"/>
+    <circle cx="208" cy="72" r="6" fill="#d1c4e9"/>
+    <circle cx="182" cy="98" r="6" fill="#1a1a1a"/>
+    <circle cx="202" cy="98" r="6" fill="#1a1a1a"/>
+    <circle cx="183.5" cy="95.5" r="1.8" fill="white"/>
+    <circle cx="202.5" cy="95.5" r="1.8" fill="white"/>
+    <circle cx="192" cy="104" r="3.5" fill="#7e57c2"/>
+    <path d="M184 110 Q192 116 200 110" stroke="#7e57c2" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="176" cy="106" r="8" fill="#d1c4e9" opacity="0.6"/>
+    <circle cx="208" cy="106" r="8" fill="#d1c4e9" opacity="0.6"/>
+  </svg>
+
+  <div style="font-family:'Comic Neue', sans-serif;font-style:normal;font-size:1.5rem;color:#e91e8c;opacity:0.75;" id="dateLabel"></div>
+  <button class="action-btn" onclick="rainHearts()" style="position:relative;z-index:2;">💗 Send Love!</button>
+</div>
+
+<script>
+const CONFIG = {
+  name: "Aleeza",
+  passcode: "3006",
+  date: "30.06.2010",
+  wishLines: [
+    "Happiest Birthday Baby 🎂 💝",
+    "I wish may god bless you with all the happiness and success in your life",
+    "May you always be the happiest person and even keep ppl around in the happiest",
+    "Hope this year brings you more joy and you get what you have been praying for",
+    "You are the most beautiful part of my life",
+    "You are my comfort person",
+    "You make me the happiest and annoy me too 😄",
+    "Thank you for always being in my life, understanding me and always listening to me",
+    "Thank you for staying in my life, understanding me and always listening to me",
+    "Thank uh for always being for me to try for all the efforts, love and care uh have shown",
+    "Thank uh for adding happy moments in my life 🌸",
+    "once again happiest birthday Princess 🎀",
+    "May we celebrate all our baby's in life together",
+  ],
+  signOff: "Forever Your's 💕",
+};
+
+document.title = `🎀 Happy Birthday ${CONFIG.name}!`;
+document.getElementById('hbName').textContent = `HAPPY BIRTHDAY ${CONFIG.name}`;
+document.getElementById('dateLabel').textContent = `${CONFIG.date} 💕`;
+
+const wishBody = document.getElementById('wishBody');
+CONFIG.wishLines.forEach(line => {
+  const p = document.createElement('p');
+  p.textContent = line;
+  wishBody.appendChild(p);
+});
+const signEl = document.createElement('p');
+signEl.className = 'rb';
+signEl.textContent = CONFIG.signOff;
+wishBody.appendChild(signEl);
+
+let entered = '';
+
+function kp(k) {
+  if (entered.length >= 4) return;
+  entered += k;
+  render();
+  if (entered.length === 4) document.getElementById('unlockBtn').style.display = 'block';
+}
+
+function render() {
+  ['b0','b1','b2','b3'].forEach((id,i) => {
+    const b = document.getElementById(id);
+    b.textContent = i < entered.length ? '✱' : '';
+    b.className = 'pc-box' + (i < entered.length ? ' on' : '');
+  });
+}
+
+function checkCode() {
+  if (entered === CONFIG.passcode) {
+    entered = ''; render();
+    document.getElementById('unlockBtn').style.display = 'none';
+    goTo('s3');
+  } else {
+    entered = ''; render();
+    document.getElementById('unlockBtn').style.display = 'none';
+    goTo('s2');
+  }
+}
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 's6') initWish();
+}
+
+function initWish() {
+  const btn = document.getElementById('wishNextBtn');
+  const scroll = document.getElementById('wishScroll');
+  btn.style.display = 'block';
+  const check = () => {
+    btn.style.opacity = scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 50 ? '1' : '0.45';
+  };
+  scroll.addEventListener('scroll', check);
+  check();
+}
+
+const emojis = ['💕','💗','💖','❤️','💝','🌸','✨','🎀','💞'];
+function rainHearts() {
+  for (let i = 0; i < 25; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'fheart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = Math.random() * 92 + 'vw';
+      h.style.top = (25 + Math.random() * 55) + 'vh';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 2700);
+    }, i * 80);
+  }
+}
+
+const sc = document.getElementById('scatter');
+const items = ['★','♥','★','♥','✦'];
+for (let i = 0; i < 35; i++) {
+  const s = document.createElement('span');
+  s.textContent = items[i % items.length];
+  s.style.top = Math.random() * 94 + '%';
+  s.style.left = Math.random() * 94 + '%';
+  s.style.fontSize = (10 + Math.random() * 10) + 'px';
+  sc.appendChild(s);
+}
+
+const ring = document.getElementById('heartRing');
+const total = 30;
+for (let i = 0; i < total; i++) {
+  const s = document.createElement('span');
+  s.textContent = i % 2 === 0 ? '♥' : '✦';
+  const angle = (i * 360 / total) * Math.PI / 180;
+  const r = 138;
+  const x = 50 + r * Math.cos(angle - Math.PI/2);
+  const y = 50 + r * Math.sin(angle - Math.PI/2);
+  s.style.cssText = `position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);font-size:11px;color:#e91e8c;opacity:0.6;`;
+  ring.appendChild(s);
+}
+
+const sb = document.getElementById('starBg');
+[[8,12],[85,18],[5,72],[90,68],[50,8],[15,45],[78,50],[40,85],[25,30],[70,25]].forEach(([x,y]) => {
+  const s = document.createElement('span');
+  s.textContent = ['✨','⭐','💫'][Math.floor(Math.random()*3)];
+  s.style.cssText = `position:absolute;left:${x}%;top:${y}%;font-size:1rem;color:#e91e8c;opacity:0.28;pointer-events:none;`;
+  sb.appendChild(s);
+});
+</script>
+</body>
+</html>
